@@ -26,7 +26,6 @@ class EstateProperty(models.Model):
 
     # --------------------------------------- Fields Declaration ----------------------------------
 
-    # Basic
     name = fields.Char("Title", required=True)
     description = fields.Text("Description")
     postcode = fields.Char("Postcode")
@@ -49,7 +48,6 @@ class EstateProperty(models.Model):
         string="Garden Orientation",
     )
 
-    # Special
     state = fields.Selection(
         selection=[
             ("new", "New"),
@@ -65,14 +63,12 @@ class EstateProperty(models.Model):
     )
     active = fields.Boolean("Active", default=True)
 
-    # Relational
     property_type_id = fields.Many2one("estate.property.type", string="Property Type")
     user_id = fields.Many2one("res.users", string="Salesman", default=lambda self: self.env.user)
     buyer_id = fields.Many2one("res.partner", string="Buyer", readonly=True, copy=False)
     tag_ids = fields.Many2many("estate.property.tag", string="Tags")
     offer_ids = fields.One2many("estate.property.offer", "property_id", string="Offers")
 
-    # Computed
     total_area = fields.Integer(
         "Total Area (sqm)",
         compute="_compute_total_area",

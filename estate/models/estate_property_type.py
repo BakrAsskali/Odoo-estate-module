@@ -16,22 +16,17 @@ class EstatePropertyType(models.Model):
 
     # --------------------------------------- Fields Declaration ----------------------------------
 
-    # Basic
     name = fields.Char("Name", required=True)
     sequence = fields.Integer("Sequence", default=10)
 
-    # Relational (for inline view)
     property_ids = fields.One2many("estate.property", "property_type_id", string="Properties")
 
-    # Computed (for stat button)
     offer_count = fields.Integer(string="Offers Count", compute="_compute_offer")
     offer_ids = fields.Many2many("estate.property.offer", string="Offers", compute="_compute_offer")
 
     # ---------------------------------------- Compute methods ------------------------------------
 
     def _compute_offer(self):
-        # This solution is quite complex. It is likely that the trainee would have done a search in
-        # a loop.
         data = self.env["estate.property.offer"].read_group(
             [("property_id.state", "!=", "canceled"), ("property_type_id", "!=", False)],
             ["ids:array_agg(id)", "property_type_id"],

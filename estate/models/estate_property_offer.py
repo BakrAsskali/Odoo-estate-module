@@ -19,11 +19,9 @@ class EstatePropertyOffer(models.Model):
 
     # --------------------------------------- Fields Declaration ----------------------------------
 
-    # Basic
     price = fields.Float("Price", required=True)
     validity = fields.Integer(string="Validity (days)", default=7)
 
-    # Special
     state = fields.Selection(
         selection=[
             ("accepted", "Accepted"),
@@ -34,15 +32,12 @@ class EstatePropertyOffer(models.Model):
         default=False,
     )
 
-    # Relational
     partner_id = fields.Many2one("res.partner", string="Partner", required=True)
     property_id = fields.Many2one("estate.property", string="Property", required=True)
-    # For stat button:
     property_type_id = fields.Many2one(
         "estate.property.type", related="property_id.property_type_id", string="Property Type", store=True
     )
 
-    # Computed
     date_deadline = fields.Date(string="Deadline", compute="_compute_date_deadline", inverse="_inverse_date_deadline")
 
     # ---------------------------------------- Compute methods ------------------------------------
@@ -64,7 +59,6 @@ class EstatePropertyOffer(models.Model):
     def create(self, vals):
         if vals.get("property_id") and vals.get("price"):
             prop = self.env["estate.property"].browse(vals["property_id"])
-            # We check if the offer is higher than the existing offers
             if prop.offer_ids:
                 max_offer = max(prop.mapped("offer_ids.price"))
                 if float_compare(vals["price"], max_offer, precision_rounding=0.01) <= 0:

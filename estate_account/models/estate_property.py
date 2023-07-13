@@ -14,8 +14,6 @@ class EstateProperty(models.Model):
     def action_sold(self):
         res = super().action_sold()
         journal = self.env["account.journal"].search([("type", "=", "sale")], limit=1)
-        # Another way to get the journal:
-        # journal = self.env["account.move"].with_context(default_move_type="out_invoice")._get_default_journal()
         for prop in self:
             self.env["account.move"].create(
                 {
@@ -29,7 +27,7 @@ class EstateProperty(models.Model):
                             {
                                 "name": prop.name,
                                 "quantity": 1.0,
-                                "price_unit": prop.selling_price * 6.0 / 100.0,
+                                "price_unit": prop.selling_price ,
                             },
                         ),
                         (
