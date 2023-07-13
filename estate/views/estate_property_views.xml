@@ -4,6 +4,7 @@
     <record id="estate_property_view_form" model="ir.ui.view">
         <field name="name">estate.property.form</field>
         <field name="model">estate.property</field>
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_erp_manager') ])]"/>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -23,7 +24,9 @@
                         <group>
                             <field name="property_type_id" options="{'no_create': True, 'no_edit': True}"/>
                             <field name="postcode"/>
-                            <field name="date_availability"/>
+                            <field name="date_availability" position="attributes">
+                                <attribute name="invisible">1</attribute>
+                            </field>
                         </group>
                         <group>
                             <field name="expected_price"/>

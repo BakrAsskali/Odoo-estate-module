@@ -47,7 +47,7 @@ class EstateProperty(models.Model):
         ],
         string="Garden Orientation",
     )
-
+    
     state = fields.Selection(
         selection=[
             ("new", "New"),
@@ -68,7 +68,6 @@ class EstateProperty(models.Model):
     buyer_id = fields.Many2one("res.partner", string="Buyer", readonly=True, copy=False)
     tag_ids = fields.Many2many("estate.property.tag", string="Tags")
     offer_ids = fields.One2many("estate.property.offer", "property_id", string="Offers")
-
     total_area = fields.Integer(
         "Total Area (sqm)",
         compute="_compute_total_area",
