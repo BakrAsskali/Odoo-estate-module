@@ -47,7 +47,7 @@ class EstateProperty(models.Model):
         ],
         string="Garden Orientation",
     )
-
+    
     state = fields.Selection(
         selection=[
             ("new", "New"),
@@ -68,13 +68,14 @@ class EstateProperty(models.Model):
     buyer_id = fields.Many2one("res.partner", string="Buyer", readonly=True, copy=False)
     tag_ids = fields.Many2many("estate.property.tag", string="Tags")
     offer_ids = fields.One2many("estate.property.offer", "property_id", string="Offers")
-
     total_area = fields.Integer(
         "Total Area (sqm)",
         compute="_compute_total_area",
         help="Total area computed by summing the living area and the garden area",
     )
     best_price = fields.Float("Best Offer", compute="_compute_best_price", help="Best offer received")
+    user_group=fields.Boolean(compute='_compute_user_group')
+    image=fields.Binary()
 
     # ---------------------------------------- Compute methods ------------------------------------
 
@@ -87,6 +88,10 @@ class EstateProperty(models.Model):
     def _compute_best_price(self):
         for prop in self:
             prop.best_price = max(prop.offer_ids.mapped("price")) if prop.offer_ids else 0.0
+
+    def _compute_user_group(self):
+        for prop in self:
+            prop.user_group = self.env.user.has_group('base.group_erp_manager')
 
     # ----------------------------------- Constrains and Onchanges --------------------------------
 
