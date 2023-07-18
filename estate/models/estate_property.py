@@ -76,6 +76,10 @@ class EstateProperty(models.Model):
     best_price = fields.Float("Best Offer", compute="_compute_best_price", help="Best offer received")
     user_group=fields.Boolean(compute='_compute_user_group')
     image=fields.Binary()
+    property_count=fields.Integer(compute='_compute_property_count')
+    total_expected_price=fields.Float(compute='_compute_total_expected_price')
+    offers_accepted=fields.Integer(compute='_compute_offers_accepted')
+    earnings=fields.Float(compute='_compute_earnings')
 
     # ---------------------------------------- Compute methods ------------------------------------
 
@@ -92,6 +96,24 @@ class EstateProperty(models.Model):
     def _compute_user_group(self):
         for prop in self:
             prop.user_group = self.env.user.has_group('base.group_erp_manager')
+
+    def _compute_property_count(self):
+        for prop in self:
+            prop.property_count = self.env['estate.property'].search_count([])
+
+    def _compute_total_expected_price(self):
+        for prop in self:
+            prop.total_expected_price = sum(self.mapped('expected_price'))
+
+    def _compute_offers_accepted(self):
+        for prop in self:
+            prop.offers_accepted = self.env['estate.property.offer'].search_count([('state','=','accepted')])
+
+    def _compute_earnings(self):
+        for prop in self:
+            if prop.state=='sold':
+                prop.earnings = sum(self.mapped('selling_price'))
+
 
     # ----------------------------------- Constrains and Onchanges --------------------------------
 
