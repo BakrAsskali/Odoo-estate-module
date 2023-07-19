@@ -27,7 +27,7 @@ registerModel({
          * Download Audio Attachment.
          */
         downloadUrl: attr({
-            related:'attachment.downloadUrl'
+            related: 'attachment.downloadUrl'
         }),
     },
 });
