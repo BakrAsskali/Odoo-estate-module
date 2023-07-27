@@ -2,8 +2,6 @@
 <template name="Voicechatter" id="chatterr" xml:space="preserve">
     <t t-name="checkmytemp" t-inherit="mail.Composer" t-inherit-mode="extension" owl="1">
         <xpath expr="//button[hasclass('o_Composer_buttonEmojis')]" position="after">
-            <button class="o_Composer_button  o_Composer_toolButton btn btn-light fa fa-tasks border-0 rounded-pill mx-1" id="give_task" title="Task" aria-label="Task" type="button" t-on-click="composerView.giveTask">
-            </button>
             <button class="o_Composer_button  o_Composer_toolButton btn btn-light fa fa-microphone border-0 rounded-pill mx-1" id="record_voice" title="Voice" aria-label="Voice" type="button" t-on-click="composerView.recordVoice">
             </button>
         </xpath>

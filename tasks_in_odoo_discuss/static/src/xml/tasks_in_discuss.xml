@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<template name="DiscussTasks" id="tasks" xml:space="preserve">
+    <t t-name="Tasks" t-inherit="mail.Composer" t-inherit-mode="extension" owl="1">
+        <xpath expr="//button[hasclass('o_Composer_buttonEmojis')]" position="after">
+            <button type="button" id="taskButton" class="btn btn-sm btn-default o_button_discuss_tasks" data-toggle="modal" data-target="#tasks_modal" t-on-click="composerView.giveTask">
+                <i class="fa fa-tasks" aria-hidden="true"></i>
+            </button>
+        </xpath>
+    </t>
+    <t t-name="Mark_as_done" t-inherit="mail.Message" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_Message_actionListContainer')]" position="inside">
+            <i class="o_MessageActionView cursor-pointer ps-1 pe-1 py-2 fa fa-lg o_MessageActionView_actionToggleDone fa-check" role="button" tabindex="0" title="Mark as Done" aria-label="Mark as Done">
+            </i>
+        </xpath>
+    </t>
+</template>
