@@ -5,6 +5,8 @@ import { attr } from '@mail/model/model_field';
 import { clear, link } from '@mail/model/model_field_command';
 import '@mail/models/composer_view';
 import '@mail/models/message';
+import '@mail/models/message_action';
+import '@mail/models/message_action_list';
 require('web.core');
 
 registerPatch({
@@ -130,12 +132,12 @@ registerPatch({
 });
 
 registerPatch({
-    name: 'MessageView',
-    recordMethods: {
-        onload() {
-            if (this.message.body === 'this is a task') {
-
+    name: 'Message',
+    fields: {
+        task: attr({
+            compute() {
+                return this.body.includes('this is a task');
             }
-        }
+        }),
     },
 });

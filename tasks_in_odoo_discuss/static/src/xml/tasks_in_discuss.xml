@@ -7,10 +7,24 @@
             </button>
         </xpath>
     </t>
-    <t t-name="Mark_as_done" t-inherit="mail.Message" t-inherit-mode="extension" owl="1">
-        <xpath expr="//div[hasclass('o_Message_actionListContainer')]" position="inside">
+    <t t-name="Mark_as_done" t-inherit="mail.MessageActionList" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_MessageActionList')]" position="inside">
             <i class="o_MessageActionView cursor-pointer ps-1 pe-1 py-2 fa fa-lg o_MessageActionView_actionToggleDone fa-check" role="button" tabindex="0" title="Mark as Done" aria-label="Mark as Done">
             </i>
+        </xpath>
+    </t>
+
+    <t t-name="message_background" t-inherit="mail.Message" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_Message_background')]" position="replace">
+            <div t-if="messageView.message.prettyBody !== '' || messageView.composerViewInEditing" class="o_Message_background position-absolute start-0 top-0 w-100 h-100" t-att-class="{
+                                        'rounded-end-3': !messageView.isInChatWindowAndIsAlignedRight and (messageView.message.isDiscussionOrNotification or messageView.message.message_type === 'sms'),
+                                        'rounded-start-3': messageView.isInChatWindowAndIsAlignedRight and (messageView.message.isDiscussionOrNotification or messageView.message.message_type === 'sms'),
+                                        'rounded-bottom-3 border': messageView.message.isDiscussionOrNotification or messageView.message.message_type === 'sms',
+                                        'o-isAuthorNotCurrentUserOrGuest border-info bg-info-light': !messageView.message.isCurrentUserOrGuestAuthor and !messageView.message.isHighlighted and (messageView.message.isDiscussionOrNotification or messageView.message.message_type === 'sms'),
+                                        'border-success bg-success-light opacity-25': messageView.message.isCurrentUserOrGuestAuthor and !messageView.message.isHighlighted and (messageView.message.isDiscussionOrNotification or messageView.message.message_type === 'sms') and !messageView.message.task,
+                                        'border-warning bg-warning-light opacity-50': messageView.message.isHighlighted and (messageView.message.isDiscussionOrNotification or messageView.message.message_type === 'sms') and !messageView.message.task,
+                                        'border-danger bg-danger-light opacity-50': !messageView.message.isHighlighted and messageView.message.task and (messageView.message.isDiscussionOrNotification or messageView.message.message_type === 'sms'),
+                                    }" />
         </xpath>
     </t>
 </template>
