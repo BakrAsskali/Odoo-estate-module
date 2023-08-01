@@ -27,4 +27,36 @@
                                     }" />
         </xpath>
     </t>
+
+    <t t-name="no_result" t-inherit="mail.MessageList" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_MessageList_empty')]" position="replace">
+            <t t-if="messageListView.threadViewOwner.thread === messaging.inbox.thread">
+                <h4 class="o_MessageList_emptyTitle mb-3 fw-bolder">
+                                Congratulations, your inbox is empty
+                </h4>
+                            New messages appear here.
+            </t>
+            <t t-elif="messageListView.threadViewOwner.thread === messaging.starred.thread">
+                <h4 class="o_MessageList_emptyTitle mb-3 fw-bolder">
+                                No starred messages
+                </h4>
+                            You can mark any message as 'starred', and it shows up in this mailbox.
+            </t>
+            <t t-elif="messageListView.threadViewOwner.thread === messaging.tasked.thread">
+                <h4 class="o_MessageList_emptyTitle mb-3 fw-bolder">
+                                No tasked messages
+                </h4>
+            </t>
+            <t t-elif="messageListView.threadViewOwner.thread === messaging.history.thread">
+                <img src="/web/static/img/neutral_face.svg" alt="History"/>
+                <h4 class="o_MessageList_emptyTitle mb-3 fw-bolder">
+                                No history messages
+                </h4>
+                            Messages marked as read will appear in the history.
+            </t>
+            <t t-else="">
+                            There are no messages in this conversation.
+            </t>
+        </xpath>
+    </t>
 </template>

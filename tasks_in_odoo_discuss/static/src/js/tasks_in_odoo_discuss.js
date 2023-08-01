@@ -1,12 +1,12 @@
 /** @odoo-module **/
 import { addLink, escapeAndCompactTextContent, parseAndTransform } from '@mail/js/utils';
 import { registerPatch } from '@mail/model/model_core';
-import { attr } from '@mail/model/model_field';
-import { clear, link } from '@mail/model/model_field_command';
+import { attr, one } from '@mail/model/model_field';
+import { clear } from '@mail/model/model_field_command';
 import '@mail/models/composer_view';
+import '@mail/models/mailbox';
 import '@mail/models/message';
-import '@mail/models/message_action';
-import '@mail/models/message_action_list';
+import '@mail/models/messaging';
 require('web.core');
 
 registerPatch({
@@ -138,6 +138,82 @@ registerPatch({
             compute() {
                 return this.body.includes('this is a task');
             }
+        }),
+    },
+});
+
+registerPatch({
+    name: 'Messaging',
+    fields: {
+        tasked: one('Mailbox', {
+            default: {},
+            inverse: 'messagingAsTasked',
+        }),
+    },
+});
+
+registerPatch({
+    name: 'Mailbox',
+    fields: {
+        messagingAsTasked: one('Messaging', {
+            identifying: true,
+            inverse: 'tasked',
+        }),
+        name: attr({
+            compute() {
+                switch (this) {
+                    case this.messaging.history:
+                        return this.env._t("History");
+                    case this.messaging.inbox:
+                        return this.env._t("Inbox");
+                    case this.messaging.starred:
+                        return this.env._t("Starred");
+                    case this.messaging.tasked:
+                        return this.env._t("Tasked");
+                    default:
+                        return clear();
+                }
+            },
+        }),
+        sequence: attr({
+            compute() {
+                switch (this) {
+                    case this.messaging.history:
+                        return 2;
+                    case this.messaging.inbox:
+                        return 0;
+                    case this.messaging.starred:
+                        return 1;
+                    case this.messaging.tasked:
+                        return 3;
+                    default:
+                        return clear();
+                }
+            },
+        }),
+        thread: one('Thread', {
+            compute() {
+                const threadId = (() => {
+                    switch (this) {
+                        case this.messaging.history:
+                            return 'history';
+                        case this.messaging.inbox:
+                            return 'inbox';
+                        case this.messaging.starred:
+                            return 'starred';
+                        case this.messaging.tasked:
+                            return 'tasked';
+                    }
+                })();
+                if (!threadId) {
+                    return clear();
+                }
+                return {
+                    id: threadId,
+                    model: 'mail.box',
+                };
+            },
+            inverse: 'mailbox',
         }),
     },
 });
