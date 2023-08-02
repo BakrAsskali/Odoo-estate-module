@@ -4,9 +4,8 @@ import { registerPatch } from '@mail/model/model_core';
 import { attr, one } from '@mail/model/model_field';
 import { clear } from '@mail/model/model_field_command';
 import '@mail/models/composer_view';
-import '@mail/models/mailbox';
 import '@mail/models/message';
-import '@mail/models/messaging';
+import '@mail/models/message_action_list';
 require('web.core');
 
 registerPatch({
@@ -139,81 +138,21 @@ registerPatch({
                 return this.body.includes('this is a task');
             }
         }),
-    },
-});
-
-registerPatch({
-    name: 'Messaging',
-    fields: {
-        tasked: one('Mailbox', {
-            default: {},
-            inverse: 'messagingAsTasked',
+        isDone: attr({
+            default: false,
         }),
     },
 });
 
 registerPatch({
-    name: 'Mailbox',
-    fields: {
-        messagingAsTasked: one('Messaging', {
-            identifying: true,
-            inverse: 'tasked',
-        }),
-        name: attr({
-            compute() {
-                switch (this) {
-                    case this.messaging.history:
-                        return this.env._t("History");
-                    case this.messaging.inbox:
-                        return this.env._t("Inbox");
-                    case this.messaging.starred:
-                        return this.env._t("Starred");
-                    case this.messaging.tasked:
-                        return this.env._t("Tasked");
-                    default:
-                        return clear();
-                }
-            },
-        }),
-        sequence: attr({
-            compute() {
-                switch (this) {
-                    case this.messaging.history:
-                        return 2;
-                    case this.messaging.inbox:
-                        return 0;
-                    case this.messaging.starred:
-                        return 1;
-                    case this.messaging.tasked:
-                        return 3;
-                    default:
-                        return clear();
-                }
-            },
-        }),
-        thread: one('Thread', {
-            compute() {
-                const threadId = (() => {
-                    switch (this) {
-                        case this.messaging.history:
-                            return 'history';
-                        case this.messaging.inbox:
-                            return 'inbox';
-                        case this.messaging.starred:
-                            return 'starred';
-                        case this.messaging.tasked:
-                            return 'tasked';
-                    }
-                })();
-                if (!threadId) {
-                    return clear();
-                }
-                return {
-                    id: threadId,
-                    model: 'mail.box',
-                };
-            },
-            inverse: 'mailbox',
-        }),
+    name: 'MessageActionList',
+    recordMethods: {
+        async _onClickDone() {
+            if (this.message.isDone) {
+                return this.message.update({ isDone: false });
+            } else {
+                return this.message.update({ isDone: true });
+            }
+        },
     },
 });
