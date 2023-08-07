@@ -139,7 +139,13 @@ registerPatch({
             }
         }),
         isDone: attr({
-            default: false,
+            compute() {
+                var done = this.messaging.rpc({
+                    model: 'mail.message',
+                    method: 'isDoneMethod',
+                });
+                return done;
+            },
         }),
     },
 });
@@ -148,11 +154,10 @@ registerPatch({
     name: 'MessageActionList',
     recordMethods: {
         async _onClickDone() {
-            if (this.message.isDone) {
-                return this.message.update({ isDone: false });
-            } else {
-                return this.message.update({ isDone: true });
-            }
+            await this.messaging.rpc({
+                model: 'mail.message',
+                method: 'doneMethod',
+            });
         },
     },
 });
