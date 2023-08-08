@@ -139,12 +139,12 @@ registerPatch({
             }
         }),
         isDone: attr({
-            compute() {
-                var done = this.messaging.rpc({
+            async compute() {
+                var done = await this.messaging.rpc({
                     model: 'mail.message',
                     method: 'isDoneMethod',
                 });
-                return done;
+                this.update({ isDone: done });
             },
         }),
     },
@@ -157,6 +157,10 @@ registerPatch({
             await this.messaging.rpc({
                 model: 'mail.message',
                 method: 'doneMethod',
+            });
+            this.message.isDone = await this.messaging.rpc({
+                model: 'mail.message',
+                method: 'isDoneMethod',
             });
         },
     },
