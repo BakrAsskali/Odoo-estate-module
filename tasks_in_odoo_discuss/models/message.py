@@ -14,4 +14,17 @@ class Message(models.Model):
     @api.model
     def doneMethod(self):
         self.isDone = not self.isDone
-        return self.isDone
+        
+
+    @api.model
+    def create(self, vals):
+        if 'isDone' not in vals:
+            vals['isDone'] = False
+        return super(Message, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if 'isDone' not in vals:
+            vals['isDone'] = False
+        return super(Message, self).write(vals)
+        
